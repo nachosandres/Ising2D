@@ -1,5 +1,5 @@
 
-
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <fstream>
@@ -20,7 +20,8 @@ int main(){
 	int nx, ny;
 
 
-  std::default_random_engine generator;
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine generator (seed);
   std::uniform_int_distribution<int> distribution_bin(0,1);
   std::uniform_int_distribution<int> distribution_grid(0,N-1);
   std::uniform_real_distribution<double> distribution_real(0.0,1.0);
