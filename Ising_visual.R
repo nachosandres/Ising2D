@@ -19,3 +19,16 @@ M[10000]
 Mt <- as.matrix(read.table("meanMvsT.txt"))
 plot(Mt[,1],Mt[,2],ylim=c(-1,1))
 abline(h=0)
+
+library(Hmisc)
+Mmeant <- as.matrix(read.table("Mmean.txt"))
+plot(Mmeant[,1],Mmeant[,2],ylim=c(-1,1),pch=20,cex=.5,
+     xlab="T",ylab="M")
+abline(h=0)
+abline(h=1)
+abline(h=-1)
+# errbar(years,datyear,datyear+erryear,datyear-erryear,xlab="Año",ylab="Fracción de noches perdidas")
+# title(main="Variación interanual")
+# mtext("Ajuste a constante")
+errbar(Mmeant[,1],Mmeant[,2],Mmeant[,2]+Mmeant[,3],Mmeant[,2]-Mmeant[,3],
+       xlab="T",ylab="M",pch=20,cex=.5)

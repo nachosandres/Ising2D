@@ -3,13 +3,14 @@
 #include <iostream>
 #include <random>
 #include <fstream>
+#include <math.h>
 using namespace std;
 
 
 int main(){
 	const int N = 100; // Size of square grid
-	int timesteps = 10000; // Self-explanatory
-	int Ntemps = 50; // Number of temperatures used
+	int timesteps = 20000; // Self-explanatory
+	int Ntemps = 401; // Number of temperatures used
 
 	double T; // Temperature: T=1/beta (k=1)
 
@@ -17,7 +18,7 @@ int main(){
 	double Ho, Hf; // Hamiltonian before and after proposed change
 	int suma;	// Sum variable, for storing sum of all spins
 	double M[timesteps]={}; // Mean magnetization of the system as a function of 'time'
-	double Mmean; // Mean of M over last values
+	double Mmean, var, sd; // Mean of M over last values
 	int nx, ny; // Position indices for the grid
 
 
@@ -29,8 +30,8 @@ int main(){
 
 	std::ofstream output_Mmean("Mmean.txt");
 for (int cont=0; cont<Ntemps; cont++){
-T=1.5 + cont*0.025;
-
+T=1 + cont*0.005;
+cout << "T = " << T << endl;
 	for (int i=0; i<N; i++){
 		for (int j=0; j<N; j++){
 			spins[i][j] = -1 + 2*distribution_bin(generator); // Randomly initialize spins
@@ -101,10 +102,16 @@ T=1.5 + cont*0.025;
 	}
 */
 	Mmean=0;
-	for (int t=3*timesteps/5; t<timesteps; t++){
-		Mmean+=M[t]/(2*timesteps/5);
+	var=0;
+	for (int t=timesteps/2; t<timesteps; t++){
+		Mmean+=M[t]/(timesteps/2);
 	}
-	output_Mmean << T << " " << Mmean << "\n";
+	for (int t=timesteps/2; t<timesteps; t++){
+		var+=(M[t]-Mmean)*(M[t]-Mmean);
+	}
+	var/=(timesteps/2 -1);
+	sd=sqrt(var);
+	output_Mmean << T << " " << Mmean << " " << sd << "\n";
 }
 
 	return 0;
