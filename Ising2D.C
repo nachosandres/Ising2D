@@ -8,7 +8,7 @@ using namespace std;
 
 int main(){
 	const int N = 100; // Size of square grid
-	int timesteps = 10000; // Self-explanatory
+	int timesteps = 20000; // Self-explanatory
 
 	double T; // Temperature: T=1/beta (k=1)
 
