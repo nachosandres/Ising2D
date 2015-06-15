@@ -1,2 +1,6 @@
 .R*
 *.exe
+*.log
+*.out
+*.aux
+*.synctex.gz
