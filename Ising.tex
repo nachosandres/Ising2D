@@ -49,16 +49,24 @@
 \renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 \usepackage[makeroom]{cancel}
 
-\title{Estadística - Hoja 1}
+\title{Simulacón del modelo de Ising en 2D}
 \author{Ignacio Suárez Andrés}
-\date{1 de diciembre de 2014}
+\date{15 de junio de 2015}
 
 \begin{document}
 \maketitle
+\section{Introducción}
+Este ejercicio consiste en la implementación de una simulación del modelo de Ising en 2D para una red cuadrada. El sistema está descrito por el hamiltoniano
+\begin{equation}
+H=-\sum_{<i,j>} s_i s_j
+\end{equation}
+donde $s_i$ y $s_j$ representan los spines de los puntos de la red y pueden tomar el valor +1 o -1.\par
+Se estudia el comportamiento a diferentes temperaturas, con unidades de $k_B=1$, es decir, $k_BT\equiv T$. La evolución del sistema se simula mediante el algoritmo de Metropolis, para una red cuadrada de 100$\times$100 puntos y 20000 pasos de tiempo, entendiendo un paso como un número de ciclos del algoritmo igual al número de puntos de la red.\par
+El código, en C++ para la simulación y en R para la visualización, se encuentra disponible en \href{https://github.com/nachosandres/Ising2D}{GitHub}.
 
 \section{Determinación de $T_c$}
 Para conocer qué valores de $T$ tiene sentido analizar, conviene determinar primero la temperatura crítica. Con este fin, partimos de dos valores, $T=1$ y $T=3$ que comprobamos fácilmente que corresponden a los comportamientos ferromagnético y paramagnético respectivamente.\par
-Recorremos los valores intermedios en intervalos de $\Delta T = 0.005$, realizando para cada uno una simulación con 20000 pasos de tiempo y extrayendo de cada una el promedio y la desviación estándar de la magnetización media del sistema, midiendo ésta en los últimos 10000 pasos. Se muestran los resultados en la figura \ref{fig:allT}, de donde se pueden extraer las siguientes conclusiones:\par
+Recorremos los valores intermedios en intervalos de $\Delta T = 0.005$, realizando para cada uno la simulación con 20000 pasos de tiempo y extrayendo de cada una el promedio y la desviación estándar de la magnetización media del sistema, midiendo ésta en los últimos 10000 pasos. Se muestran los resultados en la figura \ref{fig:allT}, de donde se pueden extraer las siguientes conclusiones:\par
 \begin{itemize}
 \item Existe una temperatura crítica $T_c \approx$ 2,3 por debajo de la cual se da el comportamiento ferromagnético, con todos los spines tendiendo a orientarse en el mismo sentido, y por encima de la cual el comportamiento es paramagnético, con magnetización promedio aproximadamente nula.
 \item La forma de la gráfica se corresponde con una bifurcación horquilla (o \textit{pitchfork}) supercrítica.
@@ -79,7 +87,7 @@ Recorremos los valores intermedios en intervalos de $\Delta T = 0.005$, realizan
 \clearpage
 \section{Evolución temporal}
 Para entender el efecto de la temperatura, es conveniente analizar la evolución de la magnetización media desde su inicialización aleatoria.\par
-En la figura \ref{fig:tempnoTc} se han representado varios casos con temperaturas alejadas del punto crítico. Para $T<T_c$, la estabilización en torno a +1 o -1 es rápida, salvo para las excepciones en las que se forman dominios en el material. Para $T>T_c$, la magnetización media oscila cerca de 0. Se puede apreciar en ambos casos cómo la temperatura favorece el desorden, oponiéndose a la estabilización lejos de 0.
+En la figura \ref{fig:tempnoTc} se han representado varios casos con temperaturas alejadas del punto crítico. Para $T<T_c$, la estabilización en torno a +1 o -1 es rápida, salvo para las excepciones en las que se forman dominios en el material. Para $T>T_c$, la magnetización media oscila cerca de 0. Se puede apreciar en ambos casos cómo la temperatura favorece el desorden, oponiéndose a la estabilización lejos de 0.\par
 Por otra parte, en la figura \ref{fig:tempTc} se ha estudiado el comportamiento con temperaturas cercanas a $T_c$. Vemos cómo, partiendo de $T<T_c$ y subiendo, la magnetización media va dejando de estabilizarse en un valor extremo y va tomando valores menores, llegando hasta el punto de que para $T>T_c$ las oscilaciones se producen en torno a 0. Sin embargo, en torno a $T_c$, especialmente para $T=$ 2,3, las fluctuaciones se vuelven muy bruscas, pasando de golpe de estados con orientación mayoritariamente positiva a negativa y viceversa, sin alcanzar un punto de estabilizar en torno al cual oscilar.
 \begin{figure}[ht]
 \centering
@@ -114,7 +122,11 @@ Por otra parte, en la figura \ref{fig:tempTc} se ha estudiado el comportamiento 
 \end{figure}
 
 \clearpage
-\section{Problema 3}
+\section{Representación de la magnetización}
+La distribución de spines del material simulado se puede comprender mediante una representación gráfica. Para ello, se han tomado los estados finales de las simulaciones mostradas en el apartado anterior.\par
+En la figura \ref{fig:spinsmenorTc} se aprecia cómo, salvo formación de dominios que sean estables por sí mismos, se tiende a que una gran mayoría de los spines se orienten en el mismo sentido si $T<T_c$. Al aumentar la temperatura, aparecen cada vez más puntos que se oponen a la orientación mayoritaria, con un comportamiento cada vez más irregular al aproximarse a la temperatura crítica.\par
+Para $T>T_c$, vemos en la figura \ref{fig:spinsmayorTc} cómo progresivamente van desapareciendo las regiones con spines acoplados entre sí, tendiendo al aumentar la temperatura a una distribución aleatoria.\par
+Con $T=$ 2,3, el valor que hemos determinado como $T_c$, encontramos en la figura \ref{fig:spinsTc} un comportamiento que no encaja con lo visto generalmente en los casos anteriores. Concretamente, se observa que el material se llena de dominios cuyas fronteras siguen patrones irregulares
 \begin{figure}[ht]
 \centering
 \begin{subfigure}{.35\textwidth}
@@ -153,7 +165,7 @@ Por otra parte, en la figura \ref{fig:tempTc} se ha estudiado el comportamiento 
   \centering
   \includegraphics[width=1\linewidth]{spins/spinT2_25}
 \end{subfigure}
-\caption{Evolución temporal de la magnetización media para diferentes temperaturas alejadas de $T_c$, representando en cada caso todos los comportamientos que pueden darse.}
+\caption{Estado final de la magnetización para temperaturas inferiores a $T_c$. Para los valores 1 y 2, se muestran los estados de orientación positiva y negativa, junto a un ejemplo de formación de dominios estables.}
 \label{fig:spinsmenorTc}
 \end{figure}
 
@@ -161,42 +173,49 @@ Por otra parte, en la figura \ref{fig:tempTc} se ha estudiado el comportamiento 
 \centering
 \begin{subfigure}{.35\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT1+}
+  \includegraphics[width=1\linewidth]{spins/spinT2_35}
 \end{subfigure}%
 \begin{subfigure}{.35\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT1-}
+  \includegraphics[width=1\linewidth]{spins/spinT2_4}
 \end{subfigure}%
 \begin{subfigure}{.35\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT1doms}
+  \includegraphics[width=1\linewidth]{spins/spinT2_45}
 \end{subfigure}
 \begin{subfigure}{.35\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2+}
+  \includegraphics[width=1\linewidth]{spins/spinT2_5}
 \end{subfigure}%
 \begin{subfigure}{.35\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2-}
-\end{subfigure}%
-\begin{subfigure}{.35\textwidth}
-  \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2doms}
+  \includegraphics[width=1\linewidth]{spins/spinT3}
 \end{subfigure}
-\begin{subfigure}{.35\textwidth}
+\caption{Estado final de la magnetización para varias temperaturas superiores a $T_c$.}
+\label{fig:spinsmayorTc}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2_15}
+  \includegraphics[width=1\linewidth]{spins/spinT2_3_1}
 \end{subfigure}%
-\begin{subfigure}{.35\textwidth}
+\begin{subfigure}{.5\textwidth}
   \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2_2}
-\end{subfigure}%
-\begin{subfigure}{.35\textwidth}
-  \centering
-  \includegraphics[width=1\linewidth]{spins/spinT2_25}
+  \includegraphics[width=1\linewidth]{spins/spinT2_3_2}
 \end{subfigure}
-\caption{Evolución temporal de la magnetización media para diferentes temperaturas alejadas de $T_c$, representando en cada caso todos los comportamientos que pueden darse.}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{spins/spinT2_3_3}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{spins/spinT2_3_4}
+\end{subfigure}
+\caption{Estado final de la magnetización para $T=T_c=$ 2,3. Se muestran los resultados de cuatro simulaciones distintas.}
 \label{fig:spinsTc}
 \end{figure}
+
 
 \end{document}
